@@ -4,16 +4,202 @@
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-  <h3>Job Details</h3>
+  <div class="header">
+    <h2>AutoApply Profile</h2>
+  </div>
 
-  <input type="text" id="name" placeholder="Full Name">
-  <input type="email" id="email" placeholder="Email">
-  <input type="text" id="phone" placeholder="Phone">
-  <input type="text" id="skills" placeholder="Skills">
-  <input type="text" id="experience" placeholder="Experience">
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="personal">Personal</button>
+    <button class="tab-btn" data-tab="education">Education</button>
+    <button class="tab-btn" data-tab="experience">Experience</button>
+    <button class="tab-btn" data-tab="skills">Skills</button>
+    <button class="tab-btn" data-tab="questions">Questions</button>
+  </div>
 
-  <button id="save">Save Details</button>
-  <button id="fill">Autofill Form</button>
+  <div class="content">
+    <!-- PERSONAL TAB -->
+    <div id="personal" class="tab-content active">
+      <h3>Basic Info</h3>
+      <input type="text" id="fullName" placeholder="Full Name">
+      <input type="text" id="firstName" placeholder="First Name">
+      <input type="text" id="middleName" placeholder="Middle Name">
+      <input type="text" id="lastName" placeholder="Last Name">
+      <input type="date" id="dob" title="Date of Birth">
+      <select id="gender">
+        <option value="">Gender</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Other</option>
+      </select>
+      <input type="text" id="phone" placeholder="Phone">
+      <input type="email" id="email" placeholder="Email">
+      <input type="password" id="sitePassword" placeholder="Password (for account creation)">
+      
+      <h3>Identity & Other</h3>
+      <input type="text" id="aadhaar" placeholder="Aadhaar No">
+      <input type="text" id="pan" placeholder="PAN Card No">
+      
+      <h4>Disability?</h4>
+      <div class="radio-group">
+        <label><input type="radio" name="disability" value="Yes"> Yes</label>
+        <label><input type="radio" name="disability" value="No"> No</label>
+      </div>
+
+      <h4>WhatsApp Consent</h4>
+      <div class="radio-group">
+        <label><input type="radio" name="whatsappConsent" value="Yes"> Yes</label>
+        <label><input type="radio" name="whatsappConsent" value="No"> No</label>
+      </div>
+      <input type="text" id="whatsappNumber" placeholder="WhatsApp Number">
+      
+      <h3>Addresses</h3>
+      <div class="subsection">
+        <h4>Permanent Address</h4>
+        <input type="text" id="permAddress1" placeholder="Address Line 1 (House No, Street)">
+        <input type="text" id="permCity" placeholder="City">
+        <input type="text" id="permState" placeholder="State">
+        <input type="text" id="permPincode" placeholder="Pincode">
+        <input type="text" id="permCountry" placeholder="Country">
+      </div>
+      <div class="subsection">
+        <h4>Current / Temporary Address</h4>
+        <label style="display:block; margin-bottom:5px; font-size:0.9em;">
+          <input type="checkbox" id="sameAddress"> Same as Permanent
+        </label>
+        <input type="text" id="tempAddress1" placeholder="Address Line 1">
+        <input type="text" id="tempCity" placeholder="City">
+        <input type="text" id="tempState" placeholder="State">
+        <input type="text" id="tempPincode" placeholder="Pincode">
+        <input type="text" id="tempCountry" placeholder="Country">
+      </div>
+    </div>
+
+    <!-- EDUCATION TAB -->
+    <div id="education" class="tab-content">
+      <h3>Graduation</h3>
+      <input type="text" id="gradCollege" placeholder="College Name">
+      <input type="text" id="gradYear" placeholder="Year">
+      <input type="text" id="gradMonth" placeholder="Month">
+      <input type="text" id="gradDate" placeholder="Date">
+      <input type="text" id="univRegNo" placeholder="Univ Reg No">
+      
+      <h3>12th Grade</h3>
+      <input type="text" id="college12" placeholder="College/School Name">
+      <input type="text" id="year12" placeholder="Year">
+      <input type="text" id="month12" placeholder="Month">
+      <input type="text" id="date12" placeholder="Date">
+      
+      <h3>10th Grade</h3>
+      <input type="text" id="college10" placeholder="School Name">
+      <input type="text" id="year10" placeholder="Year">
+      <input type="text" id="month10" placeholder="Month">
+      <input type="text" id="date10" placeholder="Date">
+
+      <h3>History</h3>
+      <h4>Gap in Education?</h4>
+      <div class="radio-group">
+        <label><input type="radio" name="gapEducation" value="Yes"> Yes</label>
+        <label><input type="radio" name="gapEducation" value="No"> No</label>
+      </div>
+
+      <h4>Standing Backlog?</h4>
+      <div class="radio-group">
+        <label><input type="radio" name="backlog" value="Yes"> Yes</label>
+        <label><input type="radio" name="backlog" value="No"> No</label>
+      </div>
+    </div>
+
+    <!-- EXPERIENCE TAB -->
+    <div id="experience" class="tab-content">
+      <h3>Experience Level</h3>
+      <div class="radio-group">
+        <label><input type="radio" name="experienceLevel" value="Fresher"> Fresher (0 Years)</label>
+        <label><input type="radio" name="experienceLevel" value="Experienced"> Experienced</label>
+      </div>
+      <input type="text" id="totalExperience" placeholder="Total Experience (Years)">
+      
+      <div style="display: flex; gap: 10px;">
+        <input type="text" id="currentSalary" placeholder="Current Salary">
+        <input type="text" id="expectedSalary" placeholder="Expected Salary">
+      </div>
+      
+      <div id="experienceList">
+        <!-- Dynamic Experience Items will go here -->
+      </div>
+      <button id="addExperience" class="secondary-btn">+ Add Experience</button>
+
+      <hr>
+      <h3>Internships</h3>
+      <div id="internshipList">
+         <!-- Dynamic Internship Items -->
+      </div>
+      <button id="addInternship" class="secondary-btn">+ Add Internship</button>
+
+      <hr>
+      <h3>Projects</h3>
+      <div id="projectList">
+        <!-- Dynamic Project Items -->
+      </div>
+      <button id="addProject" class="secondary-btn">+ Add Project</button>
+    </div>
+
+    <!-- SKILLS TAB -->
+    <div id="skills" class="tab-content">
+      <h3>Technical</h3>
+      <input type="text" id="languages" placeholder="Programming Languages">
+      <input type="text" id="spokenLanguages" placeholder="Spoken Languages (e.g. English, Hindi)">
+      <input type="text" id="frameworks" placeholder="Frameworks">
+      <input type="text" id="databases" placeholder="Databases">
+      <input type="text" id="tools" placeholder="Tools & Platforms">
+      
+      <h3>Soft Skills</h3>
+      <input type="text" id="communication" placeholder="Communication Level">
+      <input type="text" id="leadership" placeholder="Leadership Level">
+      
+      <h3>Certifications</h3>
+      <div id="certList">
+         <!-- Dynamic Cert Items -->
+      </div>
+      <button id="addCert" class="secondary-btn">+ Add Certification</button>
+
+      <h3>Links & Interests</h3>
+      <input type="text" id="linkedin" placeholder="LinkedIn Profile URL">
+      <input type="text" id="github" placeholder="GitHub Profile URL">
+      <input type="text" id="twitter" placeholder="Twitter / X Profile URL">
+      <input type="text" id="hackerrank" placeholder="HackerRank Profile URL">
+      <input type="text" id="leetcode" placeholder="LeetCode Profile URL">
+      <input type="text" id="areaOfInterest" placeholder="Area of Interest">
+      <input type="text" id="resumeLink" placeholder="Resume Link">
+      <input type="text" id="portfolioLink" placeholder="Portfolio Link">
+      <input type="text" id="coverLetterLink" placeholder="Cover Letter Link">
+    </div>
+
+    <!-- QUESTIONS TAB -->
+    <div id="questions" class="tab-content">
+      <h3>Free Text</h3>
+      <textarea id="aboutSelf" placeholder="Tell us about yourself (500 words)" rows="4"></textarea>
+      <textarea id="coverLetter" placeholder="Cover Letter" rows="6"></textarea>
+      <textarea id="whyHire" placeholder="Why should we hire you?" rows="3"></textarea>
+      <textarea id="whyJoin" placeholder="Why do you want to join us?" rows="3"></textarea>
+      <textarea id="challenge" placeholder="Describe a challenge you faced" rows="3"></textarea>
+      <textarea id="careerGoals" placeholder="Career goals" rows="3"></textarea>
+      
+      <h3>Preferences</h3>
+      <input type="text" id="desiredRole" placeholder="Desired Job Role">
+      <input type="text" id="noticePeriod" placeholder="Notice Period">
+      <select id="workMode">
+        <option value="">Preferred Mode</option>
+        <option value="Remote">Remote</option>
+        <option value="Hybrid">Hybrid</option>
+        <option value="Onsite">Onsite</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="footer">
+    <button id="save">Save Profile</button>
+    <button id="fill">Autofill Form</button>
+  </div>
 
   <script src="popup.js"></script>
 </body>

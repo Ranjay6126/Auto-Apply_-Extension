@@ -1,4 +1,4 @@
-🚀 Auto-Apply Chrome Extension – Smart Job Form Autofill
+🚀 Auto-Apply Chrome Extension – Smart Job Form Autofill.
 
 Auto-Apply is a Chrome extension designed to save time while applying for jobs by automatically filling application forms with your personal, educational, and professional details.
 

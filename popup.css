@@ -102,6 +102,58 @@ textarea {
   gap: 10px;
 }
 
+.status {
+  min-height: 18px;
+  padding: 0 15px 12px;
+  color: #176b3a;
+  font-size: 12px;
+}
+
+.status.error {
+  color: #b42318;
+}
+
+#autoapply-review-panel {
+  position: fixed;
+  z-index: 2147483647;
+  top: 16px;
+  right: 16px;
+  width: min(360px, calc(100vw - 32px));
+  padding: 16px;
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-left: 4px solid #176b3a;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, .18);
+  color: #172033;
+  font: 14px/1.4 system-ui, sans-serif;
+}
+
+#autoapply-review-panel strong,
+#autoapply-review-panel span {
+  display: block;
+  margin-bottom: 8px;
+}
+
+#autoapply-review-panel ul {
+  max-height: 180px;
+  overflow: auto;
+  margin: 8px 0 12px;
+  padding-left: 20px;
+}
+
+#autoapply-review-panel button {
+  margin: 4px 6px 0 0;
+  padding: 8px 12px;
+  border: 0;
+  background: #176b3a;
+  color: #fff;
+  cursor: pointer;
+}
+
+#autoapply-review-panel button[data-action="close"] {
+  background: #64748b;
+}
+
 button {
   width: 100%;
   padding: 10px;

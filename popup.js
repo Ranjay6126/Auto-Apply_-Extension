@@ -186,21 +186,39 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // --- Autofill Trigger ---
+  function showStatus(message, isError = false) {
+    const status = document.getElementById('status');
+    status.textContent = message;
+    status.classList.toggle('error', isError);
+  }
+
+  // --- Autofill and review trigger ---
   document.getElementById('fill').addEventListener('click', () => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (tabs[0].id) {
-        chrome.tabs.sendMessage(tabs[0].id, { action: 'autofill' }).catch(err => {
-          chrome.scripting.executeScript({
-            target: { tabId: tabs[0].id },
-            files: ['content.js']
-          }, () => {
-            setTimeout(() => {
-               chrome.tabs.sendMessage(tabs[0].id, { action: 'autofill' });
-            }, 500);
-          });
+      const tab = tabs[0];
+      if (!tab || !tab.id) return;
+
+      chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['content.js'] }, () => {
+        if (chrome.runtime.lastError) {
+          showStatus('This page does not allow form automation.', true);
+          return;
+        }
+
+        chrome.tabs.sendMessage(tab.id, { action: 'fillAndReview' }, response => {
+          if (chrome.runtime.lastError || !response) {
+            showStatus('Could not inspect this page. Try a normal job application tab.', true);
+            return;
+          }
+          if (response.error) {
+            showStatus(response.error, true);
+            return;
+          }
+          const missing = response.missingRequired || 0;
+          showStatus(missing
+            ? `Filled ${response.filled} fields. Review ${missing} required field(s) on the page.`
+            : `Filled ${response.filled} fields. Review the page before applying.`);
         });
-      }
+      });
     });
   });
 });

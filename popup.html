@@ -187,6 +187,26 @@
       <h3>Preferences</h3>
       <input type="text" id="desiredRole" placeholder="Desired Job Role">
       <input type="text" id="noticePeriod" placeholder="Notice Period">
+      <select id="workAuthorization">
+        <option value="">Work authorization</option>
+        <option value="Yes">Authorized to work</option>
+        <option value="No">Requires sponsorship</option>
+      </select>
+      <select id="sponsorshipNeeded">
+        <option value="">Sponsorship needed?</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+      <select id="willingToRelocate">
+        <option value="">Willing to relocate?</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+      <select id="legallyAuthorized">
+        <option value="">Legally authorized?</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
       <select id="workMode">
         <option value="">Preferred Mode</option>
         <option value="Remote">Remote</option>
@@ -198,8 +218,9 @@
 
   <div class="footer">
     <button id="save">Save Profile</button>
-    <button id="fill">Autofill Form</button>
+    <button id="fill">Fill &amp; Review</button>
   </div>
+  <div id="status" class="status" role="status" aria-live="polite"></div>
 
   <script src="popup.js"></script>
 </body>

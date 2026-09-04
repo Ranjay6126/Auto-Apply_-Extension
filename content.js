@@ -1,24 +1,26 @@
-console.log("Auto-Apply content script loaded");
-
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === "autofill") {
-    console.log("Autofill requested");
-    fillForm();
-  }
-});
+if (!window.__autoApplyListenerAttached) {
+  window.__autoApplyListenerAttached = true;
+  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === "fillAndReview") {
+      fillForm().then(sendResponse).catch(error => sendResponse({ error: error.message }));
+      return true;
+    }
+  });
+}
 
 function fillForm() {
-  chrome.storage.sync.get("jobData", ({ jobData }) => {
+  return new Promise((resolve, reject) => chrome.storage.sync.get("jobData", ({ jobData }) => {
     if (!jobData) {
-      console.log("No job data found");
+      reject(new Error("Save your profile before filling a form."));
       return;
     }
 
-    console.log("Filling form with data:", jobData);
+    let filled = 0;
     const inputs = document.querySelectorAll("input, textarea, select");
     
     inputs.forEach(input => {
       if (input.type === 'hidden') return;
+      const valueBefore = input.value;
       
       // Match helpers
       const type = input.type ? input.type.toLowerCase() : "text";
@@ -146,9 +148,12 @@ function fillForm() {
       if (matches(['career goal'])) setValue(input, jobData.careerGoals);
       
       // --- Preferences ---
-      if (matches(['current salary', 'ctc'])) setValue(input, jobData.currentSalary || ''); 
-      if (matches(['expected salary', 'ctc'])) setValue(input, jobData.expectedSalary);
+      if (matches(['current salary', 'current ctc'])) setValue(input, jobData.currentSalary || '');
+      if (matches(['expected salary', 'expected ctc'])) setValue(input, jobData.expectedSalary);
       if (matches(['notice period'])) setValue(input, jobData.noticePeriod);
+      if (matches(['work authorization', 'authorized to work', 'legally authorized'])) setSelectValue(input, jobData.legallyAuthorized || jobData.workAuthorization);
+      if (matches(['sponsorship', 'visa sponsor'])) setSelectValue(input, jobData.sponsorshipNeeded);
+      if (matches(['relocat', 'relocate'])) setSelectValue(input, jobData.willingToRelocate);
 
       // --- Experience Level & Total ---
       if (matches(['total experience', 'years of experience', 'relevant experience'])) setValue(input, jobData.totalExperience);
@@ -178,8 +183,87 @@ function fillForm() {
         if (matches(['certification name', 'certificate name']) && !input.value) setValue(input, cert.name);
         if (matches(['issuing organization', 'issued by']) && !input.value) setValue(input, cert.org);
       }
+      if (input.value !== valueBefore && input.value) filled += 1;
     });
+
+    const result = scanRequiredFields();
+    renderReviewPanel(result);
+    resolve({ filled, missingRequired: result.missing.length });
+  }));
+}
+
+function scanRequiredFields() {
+  const controls = Array.from(document.querySelectorAll('input, textarea, select'))
+    .filter(input => input.type !== 'hidden' && !input.disabled);
+  const required = controls.filter(input => input.required || input.getAttribute('aria-required') === 'true');
+  const missing = required.filter(input => {
+    if (input.type === 'checkbox' || input.type === 'radio') return !input.checked && !document.querySelector(`input[name="${CSS.escape(input.name)}"]:checked`);
+    return !String(input.value || '').trim();
   });
+  return { missing, total: required.length };
+}
+
+function renderReviewPanel(result) {
+  installReviewStyles();
+  installSubmitGuards();
+  document.getElementById('autoapply-review-panel')?.remove();
+  const panel = document.createElement('aside');
+  panel.id = 'autoapply-review-panel';
+  panel.innerHTML = `<strong>AutoApply review</strong><span>${result.missing.length ? `${result.missing.length} required field(s) still need attention.` : 'All detected required fields are complete.'}</span><button type="button" data-action="apply">Review and Apply</button><button type="button" data-action="close" aria-label="Close review">Close</button>`;
+  const list = document.createElement('ul');
+  result.missing.slice(0, 12).forEach(input => {
+    const item = document.createElement('li');
+    item.textContent = getFieldLabel(input);
+    list.appendChild(item);
+  });
+  if (list.children.length) panel.insertBefore(list, panel.querySelector('[data-action="apply"]'));
+  panel.querySelector('[data-action="close"]').addEventListener('click', () => panel.remove());
+  panel.querySelector('[data-action="apply"]').addEventListener('click', () => {
+    const current = scanRequiredFields();
+    if (current.missing.length) {
+      alert(`Complete the ${current.missing.length} required field(s) listed in the review panel before applying.`);
+      return;
+    }
+    const form = document.querySelector('form');
+    if (!form) {
+      alert('No application form was detected on this page.');
+      return;
+    }
+    if (confirm('All detected required fields are complete. Submit this application now?')) {
+      window.__autoApplyConfirmedSubmit = true;
+      form.requestSubmit();
+      window.__autoApplyConfirmedSubmit = false;
+    }
+  });
+  document.body.appendChild(panel);
+}
+
+function installSubmitGuards() {
+  if (window.__autoApplySubmitGuardsInstalled) return;
+  window.__autoApplySubmitGuardsInstalled = true;
+  document.addEventListener('submit', event => {
+    if (window.__autoApplyConfirmedSubmit) return;
+    event.preventDefault();
+    alert('Review the filled answers and use the AutoApply review panel to confirm submission.');
+  }, true);
+}
+
+function installReviewStyles() {
+  if (document.getElementById('autoapply-review-styles')) return;
+  const style = document.createElement('style');
+  style.id = 'autoapply-review-styles';
+  style.textContent = `
+    #autoapply-review-panel { position: fixed; z-index: 2147483647; top: 16px; right: 16px; width: min(360px, calc(100vw - 32px)); padding: 16px; background: #fff; border: 1px solid #cbd5e1; border-left: 4px solid #176b3a; box-shadow: 0 8px 24px rgba(15,23,42,.18); color: #172033; font: 14px/1.4 system-ui,sans-serif; }
+    #autoapply-review-panel strong, #autoapply-review-panel span { display: block; margin-bottom: 8px; }
+    #autoapply-review-panel ul { max-height: 180px; overflow: auto; margin: 8px 0 12px; padding-left: 20px; }
+    #autoapply-review-panel button { margin: 4px 6px 0 0; padding: 8px 12px; border: 0; background: #176b3a; color: #fff; cursor: pointer; }
+    #autoapply-review-panel button[data-action="close"] { background: #64748b; }
+  `;
+  document.head.appendChild(style);
+}
+
+function getFieldLabel(input) {
+  return (findLabel(input).replace(/\s+/g, ' ').trim() || input.name || input.id || 'Required field').slice(0, 120);
 }
 
 // --- Helpers ---
@@ -216,7 +300,9 @@ function findLabel(input) {
 
 function setValue(input, value) {
   if (!value) return;
-  input.value = value;
+  const descriptor = Object.getOwnPropertyDescriptor(input.constructor.prototype, 'value');
+  if (descriptor && descriptor.set) descriptor.set.call(input, value);
+  else input.value = value;
   input.dispatchEvent(new Event('input', { bubbles: true }));
   input.dispatchEvent(new Event('change', { bubbles: true }));
   input.dispatchEvent(new Event('blur', { bubbles: true }));

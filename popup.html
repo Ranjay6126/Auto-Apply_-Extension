@@ -13,7 +13,11 @@
     <button class="tab-btn" data-tab="education">Education</button>
     <button class="tab-btn" data-tab="experience">Experience</button>
     <button class="tab-btn" data-tab="skills">Skills</button>
+    <button class="tab-btn" data-tab="preferences">Preferences</button>
+    <button class="tab-btn" data-tab="documents">Documents</button>
+    <button class="tab-btn" data-tab="references">References</button>
     <button class="tab-btn" data-tab="questions">Questions</button>
+    <button class="tab-btn" data-tab="additional">Additional</button>
   </div>
 
   <div class="content">
@@ -51,6 +55,9 @@
         <label><input type="radio" name="whatsappConsent" value="No"> No</label>
       </div>
       <input type="text" id="whatsappNumber" placeholder="WhatsApp Number">
+
+      <h3 style="border-bottom: 2px solid #007bff; font-size: 15px; margin-top: 20px;">Current Location</h3>
+      <input type="text" id="currentLocation" placeholder="Current Location (City, State, Country)" style="font-weight: bold; border-color: #007bff;">
       
       <h3>Addresses</h3>
       <div class="subsection">
@@ -77,23 +84,36 @@
     <!-- EDUCATION TAB -->
     <div id="education" class="tab-content">
       <h3>Graduation</h3>
+      <input type="text" id="gradDegree" placeholder="Degree (e.g. B.Tech, B.Sc, MBA)">
+      <input type="text" id="gradBranch" placeholder="Branch / Specialization">
       <input type="text" id="gradCollege" placeholder="College Name">
-      <input type="text" id="gradYear" placeholder="Year">
-      <input type="text" id="gradMonth" placeholder="Month">
-      <input type="text" id="gradDate" placeholder="Date">
+      <input type="text" id="gradPercentage" placeholder="Percentage / CGPA">
+      <input type="text" id="gradStartDate" placeholder="Start Date (YY/MM/DD)">
+      <input type="text" id="gradEndDate" placeholder="End Date (YY/MM/DD)">
+      <input type="text" id="gradYear" placeholder="Year (YY/MM/DD)">
+      <input type="text" id="gradMonth" placeholder="Month (YY/MM/DD)">
+      <input type="text" id="gradDate" placeholder="Date (YY/MM/DD)">
       <input type="text" id="univRegNo" placeholder="Univ Reg No">
       
       <h3>12th Grade</h3>
       <input type="text" id="college12" placeholder="College/School Name">
-      <input type="text" id="year12" placeholder="Year">
-      <input type="text" id="month12" placeholder="Month">
-      <input type="text" id="date12" placeholder="Date">
+      <input type="text" id="board12" placeholder="Board Name (e.g. CBSE, ICSE, State Board)">
+      <input type="text" id="percentage12" placeholder="Percentage">
+      <input type="text" id="education12StartDate" placeholder="Start Date (YY/MM/DD)">
+      <input type="text" id="education12EndDate" placeholder="End Date (YY/MM/DD)">
+      <input type="text" id="year12" placeholder="Year (YY/MM/DD)">
+      <input type="text" id="month12" placeholder="Month (YY/MM/DD)">
+      <input type="text" id="date12" placeholder="Date (YY/MM/DD)">
       
       <h3>10th Grade</h3>
       <input type="text" id="college10" placeholder="School Name">
-      <input type="text" id="year10" placeholder="Year">
-      <input type="text" id="month10" placeholder="Month">
-      <input type="text" id="date10" placeholder="Date">
+      <input type="text" id="board10" placeholder="Board Name (e.g. CBSE, ICSE, State Board)">
+      <input type="text" id="percentage10" placeholder="Percentage">
+      <input type="text" id="education10StartDate" placeholder="Start Date (YY/MM/DD)">
+      <input type="text" id="education10EndDate" placeholder="End Date (YY/MM/DD)">
+      <input type="text" id="year10" placeholder="Year (YY/MM/DD)">
+      <input type="text" id="month10" placeholder="Month (YY/MM/DD)">
+      <input type="text" id="date10" placeholder="Date (YY/MM/DD)">
 
       <h3>History</h3>
       <h4>Gap in Education?</h4>
@@ -116,10 +136,17 @@
         <label><input type="radio" name="experienceLevel" value="Fresher"> Fresher (0 Years)</label>
         <label><input type="radio" name="experienceLevel" value="Experienced"> Experienced</label>
       </div>
-      <input type="text" id="totalExperience" placeholder="Total Experience (Years)">
+      <div style="display:flex; gap:10px;">
+        <input type="number" min="0" id="totalExperience" placeholder="Experience Years" value="0">
+        <input type="number" min="0" max="11" id="totalExperienceMonths" placeholder="Experience Months" value="0">
+      </div>
+      <input type="text" id="currentCompany" placeholder="Current Company / Present Employer (NA if not applicable)" value="NA">
+      <p class="help-text" style="font-size: 11px; color: #666; margin: -5px 0 10px; padding: 0 4px;">
+        Also known as: Present Employer, Current Organization, Working At
+      </p>
       
       <div style="display: flex; gap: 10px;">
-        <input type="text" id="currentSalary" placeholder="Current Salary">
+        <input type="text" id="currentSalary" placeholder="Current CTC (per year)" value="200000">
         <input type="text" id="expectedSalary" placeholder="Expected Salary">
       </div>
       
@@ -137,6 +164,9 @@
 
       <hr>
       <h3>Projects</h3>
+      <p class="help-text" style="font-size: 11px; color: #666; margin: -5px 0 10px; padding: 0 4px;">
+        Each project should have: Title, Tech Stack / Tools, Description, Start-End Date
+      </p>
       <div id="projectList">
         <!-- Dynamic Project Items -->
       </div>
@@ -169,50 +199,186 @@
       <input type="text" id="hackerrank" placeholder="HackerRank Profile URL">
       <input type="text" id="leetcode" placeholder="LeetCode Profile URL">
       <input type="text" id="areaOfInterest" placeholder="Area of Interest">
-      <input type="text" id="resumeLink" placeholder="Resume Link">
       <input type="text" id="portfolioLink" placeholder="Portfolio Link">
-      <input type="text" id="coverLetterLink" placeholder="Cover Letter Link">
     </div>
 
-    <!-- QUESTIONS TAB -->
-    <div id="questions" class="tab-content">
-      <h3>Free Text</h3>
-      <textarea id="aboutSelf" placeholder="Tell us about yourself (500 words)" rows="10"></textarea>
-      <textarea id="coverLetter" placeholder="Cover Letter" rows="6"></textarea>
-      <textarea id="whyHire" placeholder="Why should we hire you?" rows="3"></textarea>
-      <textarea id="whyJoin" placeholder="Why do you want to join us?" rows="3"></textarea>
-      <textarea id="challenge" placeholder="Describe a challenge you faced" rows="3"></textarea>
-      <textarea id="careerGoals" placeholder="Career goals" rows="3"></textarea>
-      
-      <h3>Preferences</h3>
+    <!-- PREFERENCES TAB (NEW) -->
+    <div id="preferences" class="tab-content">
+      <h3>Job Preferences</h3>
       <input type="text" id="desiredRole" placeholder="Desired Job Role">
-      <input type="text" id="noticePeriod" placeholder="Notice Period">
-      <select id="workAuthorization">
-        <option value="">Work authorization</option>
-        <option value="Yes">Authorized to work</option>
-        <option value="No">Requires sponsorship</option>
+
+      <h4>Availability to Join</h4>
+      <select id="availabilityJoin">
+        <option value="">Select Notice Period</option>
+        <option value="Immediate">Immediate</option>
+        <option value="7 days">7 days</option>
+        <option value="15 days">15 days</option>
+        <option value="30 days">30 days</option>
+        <option value="60 days">60 days</option>
+        <option value="90 days">90 days</option>
       </select>
-      <select id="sponsorshipNeeded">
-        <option value="">Sponsorship needed?</option>
-        <option value="Yes">Yes</option>
-        <option value="No">No</option>
-      </select>
-      <select id="willingToRelocate">
-        <option value="">Willing to relocate?</option>
-        <option value="Yes">Yes</option>
-        <option value="No">No</option>
-      </select>
-      <select id="legallyAuthorized">
-        <option value="">Legally authorized?</option>
-        <option value="Yes">Yes</option>
-        <option value="No">No</option>
-      </select>
+
+      <h4>Preferred Work Mode</h4>
       <select id="workMode">
-        <option value="">Preferred Mode</option>
+        <option value="">Select Work Mode</option>
         <option value="Remote">Remote</option>
         <option value="Hybrid">Hybrid</option>
         <option value="Onsite">Onsite</option>
       </select>
+
+      <h4>Willing to Relocate</h4>
+      <div class="radio-group">
+        <label><input type="radio" name="willingToRelocate" value="Yes"> Yes</label>
+        <label><input type="radio" name="willingToRelocate" value="No"> No</label>
+      </div>
+
+      <h3>Work Authorization</h3>
+      <select id="workAuthorization">
+        <option value="">Select Work Authorization Status</option>
+        <option value="Yes">Authorized to work (no sponsorship needed)</option>
+        <option value="No">Requires sponsorship</option>
+      </select>
+
+      <h4>Sponsorship Needed?</h4>
+      <div class="radio-group">
+        <label><input type="radio" name="sponsorshipNeeded" value="Yes"> Yes</label>
+        <label><input type="radio" name="sponsorshipNeeded" value="No"> No</label>
+      </div>
+
+      <h4>Legally Authorized to Work?</h4>
+      <div class="radio-group">
+        <label><input type="radio" name="legallyAuthorized" value="Yes"> Yes</label>
+        <label><input type="radio" name="legallyAuthorized" value="No"> No</label>
+      </div>
+
+      <h3>Salary Details</h3>
+      <div style="display: flex; gap: 10px;">
+        <input type="text" id="prefCurrentSalary" placeholder="Current CTC (per year)" value="200000">
+        <input type="text" id="prefExpectedSalary" placeholder="Expected CTC (per year)">
+      </div>
+    </div>
+
+    <!-- DOCUMENTS TAB (NEW) -->
+    <div id="documents" class="tab-content">
+      <h3>Resume</h3>
+      <div class="subsection">
+        <label for="resumeFile" style="font-size: 12px; color: #666; display: block; margin-bottom: 4px;">Upload Resume File</label>
+        <input type="file" id="resumeFile" accept=".pdf,.doc,.docx,.txt" style="padding: 4px;">
+        <input type="url" id="resumeLink" placeholder="Resume URL (Shareable link)">
+      </div>
+
+      <h3>Cover Letter</h3>
+      <div class="subsection">
+        <label for="coverLetterFile" style="font-size: 12px; color: #666; display: block; margin-bottom: 4px;">Upload Cover Letter File</label>
+        <input type="file" id="coverLetterFile" accept=".pdf,.doc,.docx,.txt" style="padding: 4px;">
+        <input type="url" id="coverLetterLink" placeholder="Cover Letter URL (Shareable link)">
+      </div>
+
+      <h3>Photo / Profile Picture</h3>
+      <div class="subsection">
+        <label for="profilePhoto" style="font-size: 12px; color: #666; display: block; margin-bottom: 4px;">Upload Profile Photo</label>
+        <input type="file" id="profilePhoto" accept="image/*" style="padding: 4px;">
+      </div>
+
+      <h3>Other Documents</h3>
+      <div class="subsection">
+        <label for="otherDocs" style="font-size: 12px; color: #666; display: block; margin-bottom: 4px;">Upload Multiple Documents (Aadhaar, PAN, Marksheets, etc.)</label>
+        <input type="file" id="otherDocs" multiple style="padding: 4px;">
+        <p class="help-text" style="font-size: 10px; color: #888; margin: 4px 0 0;">
+          Tip: File uploads on job sites must be selected manually (browser security). Saved here for quick drag-and-drop or reference.
+        </p>
+      </div>
+    </div>
+
+    <!-- REFERENCES TAB (NEW) -->
+    <div id="references" class="tab-content">
+      <h3>Professional References</h3>
+      <p class="help-text" style="font-size: 11px; color: #666; margin: -5px 0 10px; padding: 0 4px;">
+        Add at least 2-3 professional references (managers, colleagues, or academic advisors)
+      </p>
+      <div id="referenceList">
+        <!-- Dynamic Reference Items -->
+      </div>
+      <button id="addReference" class="secondary-btn">+ Add Reference</button>
+    </div>
+
+    <!-- QUESTIONS TAB -->
+    <div id="questions" class="tab-content">
+      <h3 style="background: #e8f4ff; padding: 8px; border-radius: 4px;">Full Cover Letter</h3>
+      <textarea id="coverLetter" placeholder="Write your full cover letter here. Include: introduction, relevant experience, why you're a good fit, and closing." rows="10"></textarea>
+
+      <h3 style="background: #e8f4ff; padding: 8px; border-radius: 4px;">Why this role?</h3>
+      <textarea id="whyThisRole" placeholder="Why are you specifically interested in this role? Mention the company, the position, and how it aligns with your career goals." rows="4"></textarea>
+
+      <h3 style="background: #e8f4ff; padding: 8px; border-radius: 4px;">What / how can we help you?</h3>
+      <textarea id="helpMessage" placeholder="Last message: What support do you need in this application process? Any specific areas where the team can assist?" rows="4"></textarea>
+
+      <h3 style="background: #e8f4ff; padding: 8px; border-radius: 4px;">Anything else you would like us to know?</h3>
+      <textarea id="anythingElse" placeholder="Additional information, unique achievements, special circumstances, or anything else you want the hiring team to know." rows="4"></textarea>
+
+      <hr>
+      <h3>Additional Responses</h3>
+      <textarea id="aboutSelf" placeholder="Tell us about yourself (500 words)" rows="5"></textarea>
+      <textarea id="whyHire" placeholder="Why should we hire you?" rows="3"></textarea>
+      <textarea id="whyJoin" placeholder="Why do you want to join us?" rows="3"></textarea>
+      <textarea id="challenge" placeholder="Describe a challenge you faced and how you overcame it" rows="3"></textarea>
+      <textarea id="careerGoals" placeholder="Career goals (short-term & long-term)" rows="3"></textarea>
+    </div>
+
+    <!-- ADDITIONAL TAB (NEW) -->
+    <div id="additional" class="tab-content">
+      <h3>Family Details</h3>
+      <input type="text" id="fatherName" placeholder="Father's Full Name">
+      <input type="text" id="motherName" placeholder="Mother's Full Name">
+
+      <h3>Personal Status</h3>
+      <select id="maritalStatus">
+        <option value="">Marital Status</option>
+        <option value="Single">Single</option>
+        <option value="Married">Married</option>
+        <option value="Divorced">Divorced</option>
+        <option value="Widowed">Widowed</option>
+        <option value="Separated">Separated</option>
+      </select>
+
+      <h4>Blood Group</h4>
+      <select id="bloodGroup">
+        <option value="">Select Blood Group</option>
+        <option value="A+">A Positive (A+)</option>
+        <option value="A-">A Negative (A-)</option>
+        <option value="B+">B Positive (B+)</option>
+        <option value="B-">B Negative (B-)</option>
+        <option value="AB+">AB Positive (AB+)</option>
+        <option value="AB-">AB Negative (AB-)</option>
+        <option value="O+">O Positive (O+)</option>
+        <option value="O-">O Negative (O-)</option>
+      </select>
+
+      <h3>Travel ID</h3>
+      <div class="subsection">
+        <input type="text" id="passportNumber" placeholder="Passport Number">
+        <input type="text" id="passportExpiry" placeholder="Passport Expiry Date (YY/MM/DD)">
+      </div>
+
+      <h3>Driving License</h3>
+      <input type="text" id="drivingLicense" placeholder="Driving License Number">
+
+      <h3>Category / Reservation</h3>
+      <select id="category">
+        <option value="">Select Category</option>
+        <option value="General">General / Unreserved</option>
+        <option value="OBC">OBC (Other Backward Class)</option>
+        <option value="SC">SC (Scheduled Caste)</option>
+        <option value="ST">ST (Scheduled Tribe)</option>
+        <option value="EWS">EWS (Economically Weaker Section)</option>
+      </select>
+
+      <h3>Emergency Contact</h3>
+      <div class="subsection">
+        <input type="text" id="emergencyName" placeholder="Emergency Contact Name">
+        <input type="text" id="emergencyPhone" placeholder="Emergency Contact Phone Number">
+        <input type="text" id="emergencyRelation" placeholder="Relation to You (e.g. Father, Mother, Spouse, Sibling)">
+      </div>
     </div>
   </div>
 

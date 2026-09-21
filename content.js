@@ -32,6 +32,15 @@ function fillForm() {
       
       const matches = (keywords) => keywords.some(k => attributes.includes(k));
 
+      // Local files cannot be assigned by an extension: make upload fields easy to find
+      // while still filling a public document URL wherever the form provides one.
+      if (type === 'file' && matches(['resume', 'cv', 'cover letter', 'coverletter', 'photo', 'profile', 'picture', 'image', 'document', 'upload', 'attachment'])) {
+        input.style.outline = '3px solid #f59e0b';
+        input.style.outlineOffset = '1px';
+        input.title = 'Choose your document/photo here. Browsers do not allow extensions to select local files automatically.';
+        return;
+      }
+
       // --- Personal ---
       if (matches(['full name', 'fullname'])) setValue(input, jobData.fullName);
       else if (matches(['first name', 'firstname', 'f_name'])) setValue(input, jobData.firstName);
@@ -70,7 +79,7 @@ function fillForm() {
 
       // Address
       // Permanent
-      if (matches(['permanent']) || !matches(['current', 'present', 'temporary', 'correspondence'])) {
+      if (matches(['permanent']) || !matches(['current', 'present', 'temporary', 'correspondence', 'location'])) {
         if (matches(['address line 1', 'address 1', 'house no', 'street'])) setValue(input, jobData.permAddress1);
         else if (matches(['state'])) setValue(input, jobData.permState);
         else if (matches(['city', 'district'])) setValue(input, jobData.permCity);
@@ -80,7 +89,13 @@ function fillForm() {
       }
       
       // Current / Temporary
-      if (matches(['current', 'present', 'temporary', 'correspondence'])) {
+      // Prefer the dedicated current location for location questions, then current address.
+      if (matches(['current location', 'present location', 'current city', 'present city', 'your location', 'location'])) {
+        if (matches(['city', 'district'])) setValue(input, jobData.tempCity || jobData.currentLocation);
+        else if (matches(['state'])) setValue(input, jobData.tempState);
+        else if (matches(['country'])) setValue(input, jobData.tempCountry);
+        else setValue(input, jobData.currentLocation || jobData.tempCity);
+      } else if (matches(['current', 'present', 'temporary', 'correspondence'])) {
         if (matches(['address line 1', 'address 1', 'house no', 'street'])) setValue(input, jobData.tempAddress1);
         else if (matches(['state'])) setValue(input, jobData.tempState);
         else if (matches(['city', 'district'])) setValue(input, jobData.tempCity);
@@ -95,15 +110,28 @@ function fillForm() {
       if (matches(['graduation', 'bachelor']) && matches(['year'])) setValue(input, jobData.gradYear);
       if (matches(['graduation', 'bachelor']) && matches(['month'])) setValue(input, jobData.gradMonth);
       if (matches(['graduation', 'bachelor']) && matches(['date'])) setValue(input, jobData.gradDate);
+      if (matches(['graduation', 'bachelor', 'college']) && matches(['start', 'from', 'begin'])) setValue(input, jobData.gradStartDate);
+      if (matches(['graduation', 'bachelor', 'college']) && matches(['end', 'to', 'completion', 'passed'])) setValue(input, jobData.gradEndDate);
       if (matches(['registration', 'reg no', 'enrollment'])) setValue(input, jobData.univRegNo);
+      if (matches(['graduation', 'bachelor', 'degree']) && matches(['specialization', 'branch', 'stream', 'major'])) setValue(input, jobData.gradBranch);
+      if (matches(['graduation', 'bachelor']) && matches(['percentage', 'cgpa', 'marks', 'grade'])) setValue(input, jobData.gradPercentage);
+      if (matches(['degree']) && !matches(['college', 'university', 'institute', 'specialization', 'branch', 'stream', 'major', 'percentage', 'cgpa', 'marks', 'grade'])) setValue(input, jobData.gradDegree);
 
       // 12th
       if (matches(['12th', 'hsc', 'intermediate']) && matches(['school', 'college'])) setValue(input, jobData.college12);
+      if (matches(['12th', 'hsc', 'intermediate']) && matches(['board'])) setValue(input, jobData.board12);
+      if (matches(['12th', 'hsc', 'intermediate']) && matches(['percentage', 'marks', 'grade'])) setValue(input, jobData.percentage12);
       if (matches(['12th', 'hsc']) && matches(['year'])) setValue(input, jobData.year12);
+      if (matches(['12th', 'hsc', 'intermediate']) && matches(['start', 'from', 'begin'])) setValue(input, jobData.education12StartDate);
+      if (matches(['12th', 'hsc', 'intermediate']) && matches(['end', 'to', 'completion', 'passed'])) setValue(input, jobData.education12EndDate);
       
       // 10th
       if (matches(['10th', 'ssc', 'matric']) && matches(['school', 'college'])) setValue(input, jobData.college10);
+      if (matches(['10th', 'ssc', 'matric']) && matches(['board'])) setValue(input, jobData.board10);
+      if (matches(['10th', 'ssc', 'matric']) && matches(['percentage', 'marks', 'grade'])) setValue(input, jobData.percentage10);
       if (matches(['10th', 'ssc']) && matches(['year'])) setValue(input, jobData.year10);
+      if (matches(['10th', 'ssc', 'matric']) && matches(['start', 'from', 'begin'])) setValue(input, jobData.education10StartDate);
+      if (matches(['10th', 'ssc', 'matric']) && matches(['end', 'to', 'completion', 'passed'])) setValue(input, jobData.education10EndDate);
 
       // Yes/No Questions (Radios)
       if (matches(['gap in education', 'education gap'])) setRadio(input, jobData.gapEducation);
@@ -139,24 +167,88 @@ function fillForm() {
       if (matches(['interest'])) setValue(input, jobData.areaOfInterest);
 
       // --- Long Text ---
-      if (matches(['cover letter'])) setValue(input, jobData.coverLetter);
+      if (matches(['cover letter']) && !type.includes('file')) setValue(input, jobData.coverLetter);
       else if (matches(['tell us about yourself', 'about you', 'bio'])) setValue(input, jobData.aboutSelf);
       
       if (matches(['why should we hire'])) setValue(input, jobData.whyHire);
       if (matches(['why do you want to join'])) setValue(input, jobData.whyJoin);
       if (matches(['challenge'])) setValue(input, jobData.challenge);
       if (matches(['career goal'])) setValue(input, jobData.careerGoals);
+      if (matches(['how can we help', 'how may we help', 'how can we assist', 'last message', 'message for us'])) setValue(input, jobData.helpMessage);
+      if (matches(['anything else', 'additional information', 'additional comments', 'other information'])) setValue(input, jobData.anythingElse);
+      if (matches(['why this role', 'why are you interested in this role', 'why this position', 'interest in this role'])) setValue(input, jobData.whyThisRole || jobData.whyJoin);
       
       // --- Preferences ---
-      if (matches(['current salary', 'current ctc'])) setValue(input, jobData.currentSalary || '');
-      if (matches(['expected salary', 'expected ctc'])) setValue(input, jobData.expectedSalary);
-      if (matches(['notice period'])) setValue(input, jobData.noticePeriod);
-      if (matches(['work authorization', 'authorized to work', 'legally authorized'])) setSelectValue(input, jobData.legallyAuthorized || jobData.workAuthorization);
-      if (matches(['sponsorship', 'visa sponsor'])) setSelectValue(input, jobData.sponsorshipNeeded);
-      if (matches(['relocat', 'relocate'])) setSelectValue(input, jobData.willingToRelocate);
+      if (matches(['desired role', 'job role', 'position applying', 'role applying'])) setValue(input, jobData.desiredRole);
+      if (matches(['current salary', 'current ctc'])) setValue(input, jobData.currentSalary || jobData.prefCurrentSalary || '');
+      if (matches(['expected salary', 'expected ctc'])) setValue(input, jobData.expectedSalary || jobData.prefExpectedSalary);
+      if (matches(['notice period', 'available to join', 'availability', 'joining date'])) {
+        const availVal = jobData.availabilityJoin || jobData.noticePeriod;
+        if (input.tagName === 'SELECT') setSelectValue(input, availVal);
+        else if (type === 'radio') setRadio(input, availVal);
+        else setValue(input, availVal);
+      }
+      if (matches(['work mode', 'work arrangement', 'remote', 'hybrid', 'onsite', 'work location type'])) {
+        if (input.tagName === 'SELECT') setSelectValue(input, jobData.workMode);
+        else if (type === 'radio') setRadio(input, jobData.workMode);
+        else setValue(input, jobData.workMode);
+      }
+      if (matches(['work authorization', 'authorized to work', 'legally authorized'])) {
+        const authVal = jobData.legallyAuthorized || jobData.workAuthorization;
+        if (input.tagName === 'SELECT') setSelectValue(input, authVal);
+        else if (type === 'radio') setRadio(input, authVal);
+        else setValue(input, authVal);
+      }
+      if (matches(['sponsorship', 'visa sponsor'])) {
+        if (input.tagName === 'SELECT') setSelectValue(input, jobData.sponsorshipNeeded);
+        else if (type === 'radio') setRadio(input, jobData.sponsorshipNeeded);
+        else setValue(input, jobData.sponsorshipNeeded);
+      }
+      if (matches(['relocat', 'relocate'])) {
+        if (input.tagName === 'SELECT') setSelectValue(input, jobData.willingToRelocate);
+        else if (type === 'radio') setRadio(input, jobData.willingToRelocate);
+        else setValue(input, jobData.willingToRelocate);
+      }
+
+      // --- Additional / Family & Personal ---
+      if (matches(['father', 'dad']) && matches(['name'])) setValue(input, jobData.fatherName);
+      if (matches(['mother', 'mom']) && matches(['name'])) setValue(input, jobData.motherName);
+      if (matches(['marital', 'marriage'])) {
+        if (input.tagName === 'SELECT') setSelectValue(input, jobData.maritalStatus);
+        else if (type === 'radio') setRadio(input, jobData.maritalStatus);
+        else setValue(input, jobData.maritalStatus);
+      }
+      if (matches(['blood group', 'blood type', 'bloodgroup'])) {
+        if (input.tagName === 'SELECT') setSelectValue(input, jobData.bloodGroup);
+        else setValue(input, jobData.bloodGroup);
+      }
+      if (matches(['passport']) && matches(['no', 'number', 'id'])) setValue(input, jobData.passportNumber);
+      if (matches(['passport']) && matches(['expiry', 'expire', 'valid'])) setValue(input, jobData.passportExpiry);
+      if (matches(['driving license', 'driver license', 'licence no', 'license no'])) setValue(input, jobData.drivingLicense);
+      if (matches(['category', 'reservation', 'caste', 'general', 'obc', 'sc', 'st', 'ews'])) {
+        if (input.tagName === 'SELECT') setSelectValue(input, jobData.category);
+        else if (type === 'radio') setRadio(input, jobData.category);
+        else setValue(input, jobData.category);
+      }
+      // Emergency Contact
+      if (matches(['emergency']) && matches(['name', 'contact person'])) setValue(input, jobData.emergencyName);
+      if (matches(['emergency']) && matches(['phone', 'mobile', 'contact no', 'number'])) setValue(input, jobData.emergencyPhone);
+      if (matches(['emergency']) && matches(['relation', 'relationship'])) setValue(input, jobData.emergencyRelation);
+
+      // References (first reference)
+      if (jobData.reference && jobData.reference.length > 0) {
+        const ref = jobData.reference[0];
+        if (matches(['reference']) && matches(['name'])) setValue(input, ref.name);
+        if (matches(['reference']) && (matches(['title', 'designation', 'position']))) setValue(input, ref.title);
+        if (matches(['reference']) && matches(['company', 'organisation', 'organization'])) setValue(input, ref.company);
+        if (matches(['reference']) && matches(['email'])) setValue(input, ref.email);
+        if (matches(['reference']) && matches(['phone', 'mobile', 'contact'])) setValue(input, ref.phone);
+        if (matches(['reference']) && matches(['relation', 'relationship'])) setValue(input, ref.relation);
+      }
 
       // --- Experience Level & Total ---
-      if (matches(['total experience', 'years of experience', 'relevant experience'])) setValue(input, jobData.totalExperience);
+      if (matches(['experience in months', 'experience months', 'total months'])) setValue(input, jobData.totalExperienceMonths);
+      else if (matches(['total experience', 'years of experience', 'relevant experience', 'experience in years', 'experience years'])) setValue(input, jobData.totalExperience);
       if (matches(['experience level', 'fresher', 'experienced'])) {
          if (type === 'radio') {
              // Heuristic: Check if label contains "Fresher" and user is Fresher
@@ -173,8 +265,12 @@ function fillForm() {
       // Experience
       if (jobData.experience && jobData.experience.length > 0) {
         const exp = jobData.experience[0];
-        if (matches(['employer', 'company']) && !matches(['internship']) && !input.value) setValue(input, exp.company);
+        if (matches(['employer', 'company', 'organisation', 'organization', 'current employer', 'present employer', 'current company', 'present company', 'current organization', 'most recent employer']) && !matches(['internship']) && !input.value) setValue(input, exp.company || jobData.currentCompany);
         if (matches(['job title', 'designation', 'role']) && !matches(['project']) && !input.value) setValue(input, exp.role);
+      }
+      // Many forms ask for employer outside an experience section (especially freshers).
+      if (matches(['current employer', 'present employer', 'current company', 'present company', 'current organization', 'current organisation', 'employer name', 'organization name', 'organisation name', 'most recent company', 'latest company']) && !input.value) {
+        setValue(input, jobData.currentCompany || 'NA');
       }
 
       // Certifications
@@ -300,12 +396,21 @@ function findLabel(input) {
 
 function setValue(input, value) {
   if (!value) return;
+  // Profile dates use YY/MM/DD; native web date inputs require YYYY-MM-DD.
+  if (input.type === 'date') value = toNativeDate(value);
   const descriptor = Object.getOwnPropertyDescriptor(input.constructor.prototype, 'value');
   if (descriptor && descriptor.set) descriptor.set.call(input, value);
   else input.value = value;
   input.dispatchEvent(new Event('input', { bubbles: true }));
   input.dispatchEvent(new Event('change', { bubbles: true }));
   input.dispatchEvent(new Event('blur', { bubbles: true }));
+}
+
+function toNativeDate(value) {
+  const match = String(value).trim().match(/^(\d{2}|\d{4})[/-](\d{1,2})[/-](\d{1,2})$/);
+  if (!match) return value;
+  const year = match[1].length === 2 ? `20${match[1]}` : match[1];
+  return `${year}-${match[2].padStart(2, '0')}-${match[3].padStart(2, '0')}`;
 }
 
 function setSelectValue(select, value) {
